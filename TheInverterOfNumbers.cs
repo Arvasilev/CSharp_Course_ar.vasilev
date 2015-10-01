@@ -8,7 +8,7 @@ namespace CSharpCource
         {
             Console.WriteLine("Расшифровка закодированного итендификатора карточки 1267165676175383");
             long SecretID = 1267165676175383;
-            string Binare64xSecretID = Convert.ToString(SecretID, 2).PadRight(64, '0');
+            string Binare64xSecretID = Convert.ToString(SecretID, 2).PadLeft(64, '0');
             string BinareIdType = Binare64xSecretID.Substring(0, 2);
             string BinareIdCity = Binare64xSecretID.Substring(2, 15);
             string BinareIdTable = Binare64xSecretID.Substring(17, 15);
