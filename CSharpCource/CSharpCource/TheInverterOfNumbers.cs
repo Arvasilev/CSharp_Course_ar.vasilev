@@ -1,12 +1,12 @@
-using System;
+п»їusing System;
 
 namespace CSharpCource
 {
     class TheInverterOfNumbers
     {
-        static void Main()
+        public TheInverterOfNumbers()
         {
-            Console.WriteLine("Расшифровка закодированного итендификатора карточки 1267165676175383");
+            Console.WriteLine("Р Р°СЃС€РёС„СЂРѕРІРєР° Р·Р°РєРѕРґРёСЂРѕРІР°РЅРЅРѕРіРѕ РёС‚РµРЅРґРёС„РёРєР°С‚РѕСЂР° РєР°СЂС‚РѕС‡РєРё 1267165676175383");
             long SecretID = 1267165676175383;
             string Binare64xSecretID = Convert.ToString(SecretID, 2).PadLeft(64, '0');
             string BinareIdType = Binare64xSecretID.Substring(0, 2);
@@ -17,10 +17,10 @@ namespace CSharpCource
             int IdCity = Convert.ToInt32(BinareIdCity, 2);
             int IdTable = Convert.ToInt32(BinareIdTable, 2);
             int IdObject = Convert.ToInt32(BinareIdObject, 2);
-            Console.WriteLine("id типа = " + IdType);
-            Console.WriteLine("id города = " + IdCity);
-            Console.WriteLine("id таблицы = " + IdTable);
-            Console.WriteLine("id объекта = " + IdObject);
+            Console.WriteLine("id С‚РёРїР° = " + IdType);
+            Console.WriteLine("id РіРѕСЂРѕРґР° = " + IdCity);
+            Console.WriteLine("id С‚Р°Р±Р»РёС†С‹ = " + IdTable);
+            Console.WriteLine("id РѕР±СЉРµРєС‚Р° = " + IdObject);
             Console.ReadKey();
         }
     }
