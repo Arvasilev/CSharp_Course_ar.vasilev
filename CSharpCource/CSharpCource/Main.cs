@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CSharpCource
 {
@@ -10,8 +6,10 @@ namespace CSharpCource
     {
         private static void Main()
         {
-            AddingTwoNumbers a = new AddingTwoNumbers();
+            // AddingTwoNumbers a = new AddingTwoNumbers();
             // TheInverterOfNumbers b = new TheInverterOfNumbers();
+            // lecture_2_1 c = new lecture_2_1();
+            lecture_2_2 c = new lecture_2_2();
         }
 
     }

@@ -42,6 +42,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AddingTwoNumbers.cs" />
+    <Compile Include="lecture_2_2.cs" />
+    <Compile Include="lecture_2_1.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TheInverterOfNumbers.cs" />

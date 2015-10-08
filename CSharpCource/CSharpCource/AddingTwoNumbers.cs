@@ -8,10 +8,10 @@ namespace CSharpCource
         {
             Console.WriteLine("Вычислитель суммы из двух чисел");
             Console.WriteLine("Введите первое число");
-            int DigitOne = Convert.ToInt32(Console.ReadLine());
+            int NumberOne = Convert.ToInt32(Console.ReadLine());
             Console.WriteLine("Введите второе число");
-            int DigitTwo = Convert.ToInt32(Console.ReadLine());
-            int Sum = DigitOne + DigitTwo;
+            int NumberTwo = Convert.ToInt32(Console.ReadLine());
+            int Sum = NumberOne + NumberTwo;
             Console.WriteLine("Сумма:" + " " + Sum);
             Console.ReadKey();
         }
