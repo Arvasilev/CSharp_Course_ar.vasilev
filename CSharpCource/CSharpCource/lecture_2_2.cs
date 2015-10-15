@@ -15,13 +15,12 @@ namespace CSharpCource
             int matrix_number2 = Convert.ToInt32(Console.ReadLine());
 
             int[,] matrix1 = new int[matrix_number1, matrix_number2]; // создаем 1-ю матрицу и заполняем ее числами до 100
+            Random rnd = new Random();
             for (int i = 0; i < matrix_number1; i++)
             {
                 for (int j = 0; j < matrix_number2; j++)
                 {
-                    Random rnd = new Random();
                     matrix1[i, j] = rnd.Next(0, 100);
-                    Thread.Sleep(20); // добавляем задержку, что бы числа были действительно рандомными
                 }
             }
 
@@ -30,9 +29,7 @@ namespace CSharpCource
             {
                 for (int j = 0; j < matrix_number2; j++)
                 {
-                    Random rnd = new Random();
                     matrix2[i, j] = rnd.Next(0, 100);
-                    Thread.Sleep(20); // добавляем задержку, что бы числа были действительно рандомными
                 }
             }
 
