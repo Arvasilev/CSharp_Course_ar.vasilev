@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Data
+﻿namespace Data
 {
     class Card
     {
@@ -26,11 +20,16 @@ namespace Data
             this.id = id;
         }
 
-        static void Main(string[] args)
+        public void SetName (string name)
         {
-            Card changeNameAndID = new Card("alena", 100500, 50);
-
-
+             this.name = name;
         }
+
+        public void SetId(long id)
+        {
+             this.id = id;
+        }
+
+
     }
 }
