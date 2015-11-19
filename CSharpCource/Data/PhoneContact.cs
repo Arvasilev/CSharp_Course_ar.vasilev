@@ -2,11 +2,11 @@
 
 namespace ContactsCard
 {
-    class TelContacts : Contacts
+    class PhoneContact : Contact
     {
         private string _telephoneZone;
 
-        public TelContacts (string cname, string telCode) : base(cname)
+        public PhoneContact (string cname, string telCode) : base(cname)
         {
          _telephoneZone = telCode;
         }

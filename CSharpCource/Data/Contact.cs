@@ -1,10 +1,10 @@
 ﻿namespace Data
 {
-    class Contacts
+    class Contact
     {
         public string Name { get; private set; }
 
-        public Contacts(string name)
+        public Contact(string name)
         {
             Name = name;
         }
