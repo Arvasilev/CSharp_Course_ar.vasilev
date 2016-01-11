@@ -46,6 +46,7 @@
     <Compile Include="CreateTwoCard.cs" />
     <Compile Include="EmailContact.cs" />
     <Compile Include="main.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PhoneContact.cs" />
   </ItemGroup>

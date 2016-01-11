@@ -1,99 +1,127 @@
-﻿using System;
-using System.Collections.Generic;
-using ContactsCard;
-
-namespace Data
+﻿namespace Data
 {
-    class Card
-    {
-        private string _name;
-        private long synCode;
-        private long id;
+    using System;
+    using System.Collections.Generic;
 
+    public class Card : IComparable, ICloneable
+    {
+        private string Name { get;  set; }
+
+        private long SynCode { get; set; }
+
+        private long Id { get; set; }
+
+        private List<Contact> ContactsList { get; set; }
+
+        /// <summary>
+        /// Создание карточки с фиксированными параметрами.
+        /// </summary>
         public Card()
         {
-            _name = "Ivan";
-            synCode = 100500;
-            id = 1;
-            _contactsList = new List<Contact>();
+            this.Name = "Ivan";
+            this.SynCode = 100500;
+            this.Id = 1;
+            this.ContactsList = new List<Contact>();
         }
-        
+
+        /// <summary>
+        /// Создание карточки с указаными параметрами.
+        /// </summary>
         public Card(string name, long synCode, long id)
         {
-            this._name = name;
-            this.synCode = synCode;
-            this.id = id;
+            this.Name = name;
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                if (string.IsNullOrWhiteSpace(name))
+                {
+                    throw new ArgumentNullException("Имя карточки не может быть пустым.");
+                }
+            }
+
+            this.SynCode = synCode;
+            if (synCode == 0)
+            {
+                throw new FormatException("У карточки должен быть SynCode.");
+            }
+
+            this.Id = id;
+            if (id < 0)
+            {
+                throw new FormatException("Id не может быть отрицательным.");
+            }
+            this.ContactsList = new List<Contact>();
         }
 
+        /// <summary>
+        /// Устанавливает значение name.
+        /// </summary>
         public void SetName (string name)
         {
-             this._name = name;
+            this.Name = name;
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentNullException("Имя карточки не может быть пустым.");
+            }
         }
 
+        /// <summary>
+        /// Устанавливает значение id.
+        /// </summary>
         public void SetId(long id)
         {
-             this.id = id;
-        }
-
-        private static List<Contact> _contactsList;
-
-
-        
-        public static void AddContact()
-        {
-            Contact contact = null;
-            string name;
-            Console.WriteLine("Выберите тип контакта:\n1 - Телефон\n2 - Email");
-            try
+             this.Id = id;
+            if (id < 0)
             {
-                switch (Convert.ToInt32(Console.ReadLine()))
-                {
-                    case 1:
-                        Console.WriteLine("Введите имя");
-                        name = Console.ReadLine();
-                        Console.WriteLine("Введите код города");
-                        string telCode = Console.ReadLine();
-                        Console.WriteLine("Введите номер телефона");
-                        string telephone = Console.ReadLine();
-                        contact = new PhoneContact(name, telCode + "." + telephone);
-                        break;
-
-                    case 2:
-                        Console.WriteLine("Введите имя");
-                        name = Console.ReadLine();
-                        Console.WriteLine("Введите E-mail");
-                        string email = Console.ReadLine();
-                        contact = new EmailContact(name, email);
-                        break;
-
-                    default:
-                        Console.WriteLine("Такой команды нет в списке");
-                        return;
-                }
-                _contactsList.Add(contact);
-            }
-            catch (Exception)
-            {
-                Console.WriteLine("Вы ввели некорректный запрос, введите число от 1 до 2");
+                throw new FormatException("Id не может быть отрицательным.");
             }
         }
 
-        public static void Print()
+        /// <summary>
+        /// Устанавливает значение synCode.
+        /// </summary>
+        public void SetSynCode(long synCode)
         {
-            foreach (var cont in _contactsList)
+            this.SynCode = synCode;
+            if (synCode == 0)
+            {
+                throw new FormatException("У карточки должен быть SynCode.");
+            }
+        }
+
+        /// <summary>
+        /// Добавляет контакт в список
+        /// </summary>
+        public void AddContact(Contact contact)
+        {
+            this.ContactsList.Add(contact);
+        }
+
+        /// <summary>
+        /// Выводит список контактов
+        /// </summary>
+        public void Print()
+        {
+            foreach (var cont in this.ContactsList)
             {
                 Console.WriteLine(cont.ToString());
             }
+
             Console.WriteLine();
         }
 
-        public static void DelContact(String name)
+        /// <summary>
+        /// Удаляет из списка контакт с указаным именем.
+        /// </summary>
+        public void DelContact(string name)
         {
             int i = 0;
-            foreach (Contact contact in _contactsList)
+            foreach (var contact in this.ContactsList)
             {
                 if (contact.Name == name)
+                {
                     break;
+                }
+
                 i++;
 
                 if (i == -1)
@@ -101,46 +129,47 @@ namespace Data
                     Console.WriteLine("Такого контакта нет в списке");
                     return;
                 }
-                _contactsList.RemoveAt(i);
+
+                this.ContactsList.RemoveAt(i);
             }
         }
 
-        public void RunLecture42()
+        /// <summary>
+        /// (Лекция 5.2) Сравнивает две карточки.
+        /// </summary>
+        public int CompareTo(object objectCard)
         {
-            Card card = new Card();
-            while (true)
+            if (objectCard == null)
             {
-                Console.WriteLine(
-                    "Выберите действие:\n1 - Добавление контакта  карточку\n2 - Вывод списка контактов на экран\n3 - Удаление выбранного контакта\n4 - Выход");
-                try
-                {
-                    switch (Convert.ToInt32(Console.ReadLine()))
-                    {
-                        case 1:
-                            AddContact();
-                            break;
-                        case 2:
-                            Print();
-                            break;
-                        case 3:
-                            Console.WriteLine("Введите имя контакта для удаления");
-                            DelContact(Console.ReadLine());
-                            break;
-                        case 4:
-                            return;
-                        default:
-                            Console.WriteLine("Введена некорретная комманда");
-                            break;
-                    }
-                }
-                catch (Exception)
-                {
-                    Console.WriteLine("Вы ввели некорректный запрос, введите число от 1 до 4");
-                    Console.ReadKey();
-                }
+                return 1;
             }
 
+            var otherCard = objectCard as Card;
+            if (otherCard == null)
+            {
+                throw new ArgumentException("В списке карточек нет такого объекта");
+            }
 
+            if (this.Id != otherCard.Id)
+            {
+                return this.Id.CompareTo(otherCard.Id);
+            }
+
+            return !this.Name.Equals(otherCard.Name) ? string.Compare(this.Name, otherCard.Name, StringComparison.Ordinal) : this.SynCode.CompareTo(otherCard.SynCode);
+        }
+
+        /// <summary>
+        /// (Лекция 5.2) Клонирует две карточки. 
+        /// </summary>
+        public object Clone()
+        {
+            var newCard = new Card { Name = (string)this.Name.Clone(), Id = this.Id, SynCode = this.SynCode };
+            foreach (var contact in this.ContactsList)
+            {
+                newCard.ContactsList.Add((Contact)contact.Clone());
+            }
+
+            return newCard;
         }
     }
 }

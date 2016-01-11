@@ -1,8 +1,10 @@
-﻿using Data;
-
-namespace ContactsCard
+﻿namespace ContactsCard
 {
-    class PhoneContact : Contact
+    using System;
+
+    using Data;
+
+    class PhoneContact : Contact, IComparable
     {
         private string _telephoneZone;
 
