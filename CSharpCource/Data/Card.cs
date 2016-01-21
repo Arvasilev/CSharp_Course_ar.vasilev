@@ -2,6 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
+    using System.Xml.Linq;
 
     public class Card : IComparable, ICloneable
     {
@@ -11,7 +13,7 @@
 
         private long Id { get; set; }
 
-        private List<Contact> ContactsList { get; set; }
+        public List<Contact> ContactsList { get; set; }
 
         /// <summary>
         /// Создание карточки с фиксированными параметрами.
@@ -75,7 +77,10 @@
                 throw new FormatException("Id не может быть отрицательным.");
             }
         }
-
+        public long GetId
+        {
+            get { return Id; }
+        }
         /// <summary>
         /// Устанавливает значение synCode.
         /// </summary>
@@ -87,7 +92,6 @@
                 throw new FormatException("У карточки должен быть SynCode.");
             }
         }
-
         /// <summary>
         /// Добавляет контакт в список
         /// </summary>
@@ -97,65 +101,43 @@
         }
 
         /// <summary>
-        /// Выводит список контактов
-        /// </summary>
-        public void Print()
-        {
-            foreach (var cont in this.ContactsList)
-            {
-                Console.WriteLine(cont.ToString());
-            }
-
-            Console.WriteLine();
-        }
-
-        /// <summary>
         /// Удаляет из списка контакт с указаным именем.
         /// </summary>
-        public void DelContact(string name)
+        public bool DelContact(String name)
         {
-            int i = 0;
-            foreach (var contact in this.ContactsList)
-            {
-                if (contact.Name == name)
-                {
-                    break;
-                }
+            int i = ContactsList.FindIndex(x => x.Name == name);
+            if (i == -1)
+                return false;
 
-                i++;
-
-                if (i == -1)
-                {
-                    Console.WriteLine("Такого контакта нет в списке");
-                    return;
-                }
-
-                this.ContactsList.RemoveAt(i);
-            }
+            ContactsList.RemoveAt(i);
+            return true;
+        }
+        /// <summary>
+        /// Выводит список контактов
+        /// </summary>
+        public string Print()
+        {
+            return ContactsList.Aggregate("", (current, cont) => current + (cont.ToString() + "\n"));
         }
 
         /// <summary>
         /// (Лекция 5.2) Сравнивает две карточки.
         /// </summary>
-        public int CompareTo(object objectCard)
+        public int CompareTo(object obj)
         {
-            if (objectCard == null)
-            {
-                return 1;
-            }
+            if (obj == null) return 1;
 
-            var otherCard = objectCard as Card;
-            if (otherCard == null)
+            var otherCard = obj as Card;
+            if (otherCard != null)
             {
+                if (this.Id != otherCard.Id)
+                    return this.Id.CompareTo(otherCard.Id);
+                if (!this.Name.Equals(otherCard.Name))
+                    return this.Name.CompareTo(otherCard.Name);
+                return this.SynCode.CompareTo(otherCard.SynCode);
+            }
+            else
                 throw new ArgumentException("В списке карточек нет такого объекта");
-            }
-
-            if (this.Id != otherCard.Id)
-            {
-                return this.Id.CompareTo(otherCard.Id);
-            }
-
-            return !this.Name.Equals(otherCard.Name) ? string.Compare(this.Name, otherCard.Name, StringComparison.Ordinal) : this.SynCode.CompareTo(otherCard.SynCode);
         }
 
         /// <summary>
@@ -163,13 +145,29 @@
         /// </summary>
         public object Clone()
         {
-            var newCard = new Card { Name = (string)this.Name.Clone(), Id = this.Id, SynCode = this.SynCode };
-            foreach (var contact in this.ContactsList)
+            var newCard = new Card();
+            newCard.Name = (string)this.Name.Clone();
+            newCard.Id = this.Id;
+            newCard.SynCode = this.SynCode;
+            foreach (var contact in ContactsList)
             {
                 newCard.ContactsList.Add((Contact)contact.Clone());
             }
-
             return newCard;
+        }
+
+        public XElement ToXml()
+        {
+            var card = new XElement("Card", new XAttribute("Id", Id), new XAttribute("Name", Name), new XAttribute("SynCode", SynCode));
+            var contacts = new XElement("Contacts");
+            card.Add(contacts);
+
+            foreach (var contact in ContactsList)
+            {
+                contacts.Add(contact.ToXml());
+            }
+            return card;
+
         }
     }
 }

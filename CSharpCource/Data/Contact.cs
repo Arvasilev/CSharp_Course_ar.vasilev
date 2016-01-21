@@ -1,10 +1,11 @@
 ﻿namespace Data
 {
     using System;
+    using System.Xml.Linq;
 
-    public abstract class Contact : IComparable, ICloneable
+    public class Contact : IComparable, ICloneable
     {
-        public string Name { get; private set; }
+        public string Name { get; set; }
 
         protected Contact(string name)
         {
@@ -21,7 +22,7 @@
         /// </summary>
         public object Clone()
         {
-            throw new NotImplementedException();
+            return new Contact(Name);
         }
 
         /// <summary>
@@ -43,6 +44,12 @@
             {
                 throw new ArgumentException("В списке ктонактов нет такого объекта");
             }
+        }
+
+        public virtual XElement ToXml()
+        {
+            var contact = new XElement("Contact", new XAttribute("Name", Name));
+            return contact;
         }
     }
 }

@@ -1,138 +1,190 @@
-﻿namespace Data
-{
-    using System;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using Data;
 
+namespace ContactsProject
+{
     using ContactsCard;
 
-    /// <summary>
-    /// The program.
-    /// </summary>
-    internal class Program
+    class Program
     {
-        /// <summary>
-        /// Метод запуска консольного приложения
-        /// </summary>
-        public void RunCardApp()
+
+        public static void WriteToFile(string path, List<Contact> contactList)
         {
-            Card card = new Card();
-            while (true)
+            using (var sw = new StreamWriter(path, true))
             {
-                Console.WriteLine(
-                    "Выберите действие:\n1 - Добавление контакта  карточку\n2 - Вывод списка контактов на экран\n3 - Удаление выбранного контакта\n4 - Выход");
-                try
+                foreach (var contact in contactList)
                 {
-                    switch (Convert.ToInt32(Console.ReadLine()))
-                    {
-                        case 1:
-                            ConsoleAddContact();
-                            break;
-                        case 2:
-                            var p = new Card();
-                            p.Print();
-                            break;
-                        case 3:
-                            Console.WriteLine("Введите имя контакта для удаления");
-                            var d = new Card();
-                            d.DelContact(Console.ReadLine());
-                            break;
-                        case 4:
-                            return;
-                        default:
-                            Console.WriteLine("Введена некорретная комманда");
-                            break;
-                    }
-                }
-                catch (Exception)
-                {
-                    Console.WriteLine("Вы ввели некорректный запрос, введите число от 1 до 4");
-                    Console.ReadKey();
+                    sw.WriteLine(contact.ToString());
                 }
             }
-        }
 
-        /// <summary>
-        /// Консольный метод добавления контактов в список
-        /// </summary>
-        private static void ConsoleAddContact()
+        }
+        public static string ReadFromFile(string path)
         {
-            Console.WriteLine("Выберите тип контакта:\n1 - Телефон\n2 - Email");
+            using (var sr = new StreamReader(path))
+            {
+                var text = sr.ReadToEnd();
+                return text;
+            }
+            return null;
+        }
+        //Элемент меню - создание карточки
+        public static Card NewCard()
+        {
+            var card = new Card();
+            Console.WriteLine("Введите id карточки");
+            card.SetId(Convert.ToInt64(Console.ReadLine()));
+            Console.WriteLine("Введите название");
+            card.SetName(Console.ReadLine());
+            Console.WriteLine("Введите SynCode ");
+            card.SetSynCode(Convert.ToInt64(Console.ReadLine()));
+            return card;
+        }
+        //Элемент меню - создание контакта
+        public static Contact NewContact()
+        {
+            Console.WriteLine("Выберите тип контакта:\n1 - Телефонный контакт\n2 - Электронная почта");
             try
             {
-                Contact contact;
+                Contact contact = null;
+                string name;
                 switch (Convert.ToInt32(Console.ReadLine()))
                 {
                     case 1:
-                        Console.WriteLine("Введите имя");
-                        var name = Console.ReadLine();
-                        if (string.IsNullOrWhiteSpace(name))
-                        {
-                            throw new ArgumentNullException("Имя не может быть " + "пустым.");
-                        }
-
+                        Console.WriteLine("Введите имя контакта");
+                        name = Console.ReadLine();
                         Console.WriteLine("Введите код города");
-                        string telCode = Console.ReadLine();
-                        if (string.IsNullOrWhiteSpace(telCode))
-                        {
-                            throw new ArgumentNullException("Код города не может быть" + " пустым.");
-                        }
-
-                        Console.WriteLine("Введите номер телефона");
-                        string telephone = Console.ReadLine();
-                        if (string.IsNullOrWhiteSpace(telephone))
-                        {
-                            throw new ArgumentNullException("Телефон не мо" + "жет быть пустым.");
-                        }
-
-                        contact = new PhoneContact(name, telCode + "." + telephone);
-                        break;
+                        var telephone = Console.ReadLine();
+                        contact = new PhoneContact(name, telephone);
+                        return contact;
 
                     case 2:
-                        Console.WriteLine("Введите имя");
+                        Console.WriteLine("Введите имя контакта");
                         name = Console.ReadLine();
-                        if (string.IsNullOrWhiteSpace(name))
-                        {
-                            throw new ArgumentNullException("Имя не может" + " быть пустым.");
-                        }
-
-                        Console.WriteLine("Введите E-mail");
-                        string email = Console.ReadLine();
-                        if (string.IsNullOrWhiteSpace(email))
-                        {
-                            throw new ArgumentNullException("E-mail не может быть" + " пустым.");
-                        }
-
-                        contact = new EmailContact(name, email);
-                        break;
+                        Console.WriteLine("Введите alias");
+                        var alias = Console.ReadLine();
+                        contact = new EmailContact(name, alias);
+                        return contact;
 
                     default:
-                        Console.WriteLine("Такой команды нет в списке");
-                        return;
+                        Console.WriteLine("\nТакой команды нет в списке\n");
+                        break;
                 }
-
-                var a = new Card();
-                a.AddContact(contact);
             }
+
             catch (Exception)
             {
-                Console.WriteLine("Вы ввели некорректный запрос, введите число от 1 до 2");
+                Console.WriteLine("\nВы можете вводить только цифры из списка\n");
             }
+            return null;
+        }
+        //поиск в списке номера карточки по Id
+        public static int GetCardNumber(List<Card> cardList)
+        {
+            if (cardList.Count <= 0)
+                throw new Exception("У Вас нет ни одной карточки");
+            Console.WriteLine("Введите Id карточки для работы с ней");
+            var id = Convert.ToInt64(Console.ReadLine());
+            var cardNumber = cardList.FindIndex(i => i.GetId == id);
+            if (cardNumber == -1)
+                throw new Exception("Карточки с таким Id не существует");
+            return cardNumber;
         }
 
-        /// <summary>
-        /// (Лекция 6.1) 
-        /// - Создать 3 контакта разного типа, сохранить их в списке. Список контактов сохранить в файл “contacts.txt” любым способом.
-        /// - Считать данные из файла “contacts.txt” и вывести на консоль)
-        /// </summary>
+        public void RunCardApp()
+        {
+            //для клонирования
+            var card1 = new Card("23", 23423, 1);
+            card1.AddContact(new EmailContact("123", "2342"));
+            var card2 = (Card)card1.Clone();
+            card1.ContactsList[0].Name = "2345";
+            Console.WriteLine(card1.Print());
+            Console.WriteLine(card2.Print());
+            var cardList = new List<Card>();
+            long id = 0;
+
+            //основное меню
+            var card = new Card();
+            while (true)
+            {
+                Console.WriteLine(
+                    "Выберите действие:\n0 - Создание новой карточки\n1 - Добавление контакта  карточку\n2 - Вывод списка контактов на экран\n3 - Удаление выбранного контакта\n4 - Вывод информации о карточки в Xml\n5 - Выход");
+                try
+                {
+                    var cardNumber = 0;
+                    switch (Convert.ToInt32(Console.ReadLine()))
+                    {
+                        case 0:
+                            cardList.Add(NewCard());
+                            break;
+
+                        case 1:
+                            cardNumber = GetCardNumber(cardList);
+                            cardList[cardNumber].AddContact(NewContact());
+                            break;
+                        case 2:
+                            cardNumber = GetCardNumber(cardList);
+                            Console.WriteLine(cardList[cardNumber].Print());
+                            break;
+                        case 3:
+                            cardNumber = GetCardNumber(cardList);
+                            Console.WriteLine("Введите контакт для удаления ");
+
+                            if (cardList[cardNumber].DelContact(Console.ReadLine()) == false)
+                                Console.WriteLine("Такого контакта нет в списке");
+                            break;
+                        case 4:
+                            cardNumber = GetCardNumber(cardList);
+                            Console.WriteLine(cardList[cardNumber].ToXml());
+                            break;
+
+                        case 5: return;
+                        default:
+                            Console.WriteLine("\nТакой команды нет в списке\n");
+                            break;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+
+                }
+            }
+            Console.ReadKey();
+        }
+
         public void Lecture6_1()
         {
             var card = new Card();
+            var contactsList = card.ContactsList;
+
             var contact1 = new PhoneContact("Ivan", "383" + "." + "3963222");
             card.AddContact(contact1);
             var contact2 = new PhoneContact("Mary", "913" + "." + "1233211");
             card.AddContact(contact2);
-            var contact3 = new EmailContact("Ars", "ar.vasilev@2gis.ru");
+            var contact3 = new EmailContact("Ars", "ar.vasilev@qwerty.ru");
             card.AddContact(contact3);
-        }
 
+            const string path = "contacts.txt";
+
+            StreamWriter sw = new StreamWriter(path);
+            foreach (Contact item in contactsList)
+            {
+                sw.WriteLine(item.ToString());
+            }
+
+            sw.Close();
+
+            using (StreamReader sr = new StreamReader(path))
+            {
+                String line = sr.ReadToEnd();
+                Console.WriteLine(line);
+                sr.Close();
+            }
+
+            Console.ReadKey();
+        }
     }
 }
